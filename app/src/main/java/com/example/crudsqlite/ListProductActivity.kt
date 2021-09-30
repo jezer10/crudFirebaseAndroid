@@ -16,22 +16,47 @@ class ListProductActivity : AppCompatActivity() {
         recycler = findViewById(R.id.rv_list_product)
         recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        firebaseHelper.listProduct().addOnSuccessListener {
+
+
+        firebaseHelper.listCategory().addOnSuccessListener { categoryQS->
+            var categoryList: ArrayList<CategoriaModel> = arrayListOf()
             var productList: ArrayList<ProductModel> = arrayListOf()
-            it.documents.forEach {
-                productList.add(
-                    ProductModel(
-                        "",
-                        it.data?.get("name") as String,
-                        it.data?.get("price") as Double,
-                        it.data?.get("stock") as Int,
-                        it.data?.get("idcategory") as String
+
+            categoryQS.documents.forEach { categoryDocuments->
+                categoryList.add(
+                    CategoriaModel(
+                        categoryDocuments.id,
+                        categoryDocuments.data?.get("name") as String
                     )
                 )
+
             }
-            recycler.adapter = ProductAdapter(
-                productList
-            )
+
+
+            firebaseHelper.listProduct().addOnSuccessListener {productQS->
+                productQS.documents.forEach { productDocuments->
+                    productList.add(
+                        ProductModel(
+                            productDocuments.id,
+                            productDocuments.data?.get("name") as String,
+                            (productDocuments.data?.get("price") as Double),
+                            (productDocuments.data?.get("stock") as Long).toInt(),
+                            productDocuments.data?.get("idcategory") as String,
+                            categoryList.filter {
+                                it.id == productDocuments.data?.get("idcategory")
+                            }[0].name
+                        )
+                    )
+                }
+                productList.forEach {
+                    Log.w(ContentValues.TAG, "${it.idproducto}")
+                }
+                recycler.adapter = ProductAdapter(
+                    productList
+                )
+
+            }
+
         }
 
 

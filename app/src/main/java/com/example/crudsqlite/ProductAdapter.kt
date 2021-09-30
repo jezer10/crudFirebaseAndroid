@@ -20,14 +20,9 @@ class ProductAdapter(var scheduleList: ArrayList<ProductModel>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         var view: View = LayoutInflater.from(parent.context)
             .inflate(R.layout.activity_product_item, parent, false)
-
-
-
-
         return ProductViewHolder(view)
 
     }
-
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val productElement= scheduleList[position]
@@ -41,13 +36,16 @@ class ProductAdapter(var scheduleList: ArrayList<ProductModel>) :
                     // Respond to negative button press
                 }
                 .setPositiveButton(holder.deleteButton.context.resources.getString(R.string.accept)) { dialog, which ->
-                    firebaseHelper.delProduct(productElement.idproducto)
-                    deleteItem(position)
-                    Toast.makeText(
-                        holder.deleteButton.context,
-                        "Successfully deleted element",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    firebaseHelper.delProduct(productElement.idproducto).addOnSuccessListener {
+                        deleteItem(position)
+                        Toast.makeText(
+                            holder.deleteButton.context,
+                            "Successfully deleted element",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+
                 }
                 .show()
         }
@@ -60,7 +58,7 @@ class ProductAdapter(var scheduleList: ArrayList<ProductModel>) :
 
     override fun getItemCount(): Int = scheduleList.size
 
-    class ProductViewHolder : RecyclerView.ViewHolder, View.OnClickListener {
+    class ProductViewHolder : RecyclerView.ViewHolder {
         var name: TextView
         var price: TextView
         var stock: TextView
@@ -102,10 +100,7 @@ class ProductAdapter(var scheduleList: ArrayList<ProductModel>) :
 
         }
 
-        override fun onClick(v: View?) {
-            val position = adapterPosition
 
-        }
 
     }
 }

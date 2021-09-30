@@ -21,9 +21,9 @@ class CreateProductActivity : AppCompatActivity() {
     lateinit var listButton: Button
     lateinit var categoryDropdown: AutoCompleteTextView
     private var idcategoria: String = ""
-    private var idproducto:String =""
+    private var idproducto: String = ""
 
-    var firebaseHelper:FirebaseHelper= FirebaseHelper()
+    var firebaseHelper: FirebaseHelper = FirebaseHelper()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,14 +38,16 @@ class CreateProductActivity : AppCompatActivity() {
         categoryDropdown = findViewById(R.id.actv_create_product_category)
 
 
-        firebaseHelper.listCategory().addOnSuccessListener {
+        firebaseHelper.listCategory().addOnSuccessListener { categoryQS->
             val items: MutableList<CategoriaModel> = mutableListOf()
-                it.documents.forEach {
-                    items.add(CategoriaModel(
-                        it.id as String,
+            categoryQS.documents.forEach {
+                items.add(
+                    CategoriaModel(
+                        it.id ,
                         it.data?.get("name") as String
-                    ))
-                }
+                    )
+                )
+            }
             val adapter = ArrayAdapter(applicationContext, R.layout.dropdown_product_item, items)
             categoryDropdown.setAdapter(adapter)
 
@@ -83,6 +85,7 @@ class CreateProductActivity : AppCompatActivity() {
         }
         categoryDropdown.setOnItemClickListener { parent, view, position, id ->
             val item: CategoriaModel = categoryDropdown.adapter.getItem(position) as CategoriaModel
+            Log.i(ContentValues.TAG,"${item.id}")
             idcategoria = item.id
         }
 
@@ -95,50 +98,55 @@ class CreateProductActivity : AppCompatActivity() {
         stockText.setText("")
     }
 
-    fun validateForm(idproducto:String,name: String, price: String, stock: String, idcategoria: String) {
+    fun validateForm(
+        idproducto: String,
+        name: String,
+        price: String,
+        stock: String,
+        idcategoria: String
+    ) {
         if (name.isBlank() && price.isBlank() && stock.isBlank() && idcategoria.isBlank()) {
             Log.i(ContentValues.TAG, "${categoryDropdown.editableText}")
             Toast.makeText(applicationContext, "Empty fields", Toast.LENGTH_SHORT).show()
             return
         }
 
-        if(idproducto==""){
-            var successCode =
-                firebaseHelper.createProduct(
-                    ProductModel(
-                        idproducto,
-                        name,
-                        price.toDouble(),
-                        stock.toInt(),
-                        idcategoria
-                    )
+
+        if (idproducto == "") {
+
+            firebaseHelper.createProduct(
+                ProductModel(
+                    idproducto,
+                    name,
+                    price.toDouble(),
+                    stock.toInt(),
+                    idcategoria
                 )
-            Log.i(ContentValues.TAG, "$successCode")
-            if (false) {
-                Toast.makeText(applicationContext, "Sucessfully Inserted Row", Toast.LENGTH_SHORT)
+            ).addOnSuccessListener {
+                Toast.makeText(applicationContext, "Successfully Inserted Row", Toast.LENGTH_SHORT)
                     .show()
-            } else {
-                Toast.makeText(applicationContext, "que asiendi", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener {
+                Toast.makeText(applicationContext, "Error Inserting Row", Toast.LENGTH_SHORT).show()
             }
-        }else{
-            var successCode =
-                firebaseHelper.updateProduct(
-                    ProductModel(
-                        idproducto,
-                        name,
-                        price.toDouble(),
-                        stock.toInt(),
-                        idcategoria
-                    )
+
+        } else {
+            firebaseHelper.updateProduct(
+                ProductModel(
+                    idproducto,
+                    name,
+                    price.toDouble(),
+                    stock.toInt(),
+                    idcategoria
                 )
-            Log.i(ContentValues.TAG, "$successCode")
-            if (false) {
-                Toast.makeText(applicationContext, "Sucessfully Updated Row $successCode", Toast.LENGTH_SHORT)
+            ).addOnSuccessListener {
+                Toast.makeText(applicationContext, "Sucessfully Updated Row", Toast.LENGTH_SHORT)
                     .show()
-                startActivity(Intent(applicationContext,ListProductActivity::class.java))
-            } else {
+                startActivity(Intent(applicationContext, ListProductActivity::class.java))
+            }.addOnFailureListener {
                 Toast.makeText(applicationContext, "que asiendi", Toast.LENGTH_SHORT).show()
+
             }
+
         }
 
     }

@@ -1,59 +1,74 @@
 package com.example.crudsqlite
 
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class FirebaseHelper {
-    val fireStore = Firebase.firestore
+    private val firestore = Firebase.firestore
 
-    fun createProduct(product:ProductModel){
+    private val categoriesRef = firestore.collection("categories")
+    private val productsRef = firestore.collection("products")
+
+    fun createProduct(product: ProductModel): Task<DocumentReference> {
         val newProduct = hashMapOf(
-            "nombre" to product.nomprod,
-            "precio" to product.precio,
+            "name" to product.nomprod,
+            "price" to product.precio,
             "stock" to product.stock,
-            "idcategoria" to product.idcategoria
+            "idcategory" to product.idcategoria
         )
-        fireStore.collection("products").add(newProduct)
+        return productsRef.add(newProduct)
     }
-    fun createCategory(category:CategoriaModel){
+
+    fun listProduct(): Task<QuerySnapshot> {
+        return productsRef.get()
+    }
+
+    fun updateProduct(product: ProductModel): Task<Void> {
+        val newProduct: Map<String, *> = hashMapOf(
+            "name" to product.nomprod,
+            "price" to product.precio,
+            "stock" to product.stock,
+            "idcategory" to product.idcategoria
+        )
+        return productsRef.document(product.idproducto.toString()).update(newProduct)
+    }
+
+    fun delProduct(idproducto: String): Task<Void> {
+        return productsRef.document(idproducto).delete()
+    }
+
+    fun findProductById(idproduct: String): Task<DocumentSnapshot> {
+        return productsRef.document(idproduct).get()
+    }
+
+
+    fun createCategory(category: CategoriaModel): Task<DocumentReference> {
         val newCategory = hashMapOf(
             "nombre" to category.name
         )
-        fireStore.collection("category").add(newCategory)
+        return categoriesRef.add(newCategory)
     }
 
-
-    fun listProduct(): Task<QuerySnapshot> {
-        return fireStore.collection("products").get()
-    }
     fun listCategory(): Task<QuerySnapshot> {
-        return fireStore.collection("category").get()
+        return categoriesRef.get()
     }
 
-
-    fun updateProduct(product:ProductModel){
-        val newProduct:Map<String,*> = hashMapOf(
-            "nombre" to product.nomprod,
-            "precio" to product.precio,
-            "stock" to product.stock,
-            "idcategoria" to product.idcategoria
-        )
-        fireStore.collection("products").document(product.idproducto.toString()).update(newProduct)
-    }
-    fun updateCategory(category: CategoriaModel){
-        val newCategory:Map<String,*> = hashMapOf(
+    fun updateCategory(category: CategoriaModel): Task<Void> {
+        val newCategory: Map<String, *> = hashMapOf(
             "nombre" to category.name
         )
-        fireStore.collection("category").document(category.id.toString()).update(newCategory)
+        return categoriesRef.document(category.id).update(newCategory)
     }
 
-
-    fun delProduct(idproducto: String){
-        fireStore.collection("products").document(idproducto).delete()
+    fun delCategory(idcategoria: String): Task<Void> {
+        return categoriesRef.document(idcategoria).delete()
     }
-    fun delCategory(idcategoria: String){
-        fireStore.collection("category").document(idcategoria).delete()
+
+    fun findCategoryById(idcategoria: String): Task<DocumentSnapshot> {
+        return categoriesRef.document(idcategoria).get()
     }
 }

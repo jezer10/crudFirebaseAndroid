@@ -15,7 +15,7 @@ class ProductItemActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product_item)
-        Log.w(ContentValues.TAG,"INgeniero quevin")
+        Log.w(ContentValues.TAG,"Ingeniero quevin")
 
         deleteButton = findViewById(R.id.btn_product_item_delete)
         deleteButton.setOnClickListener {
