@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">CrudSqlite</string>
+    <string name="delete_dialog">¿Eliminar Producto?</string>
+    <string name="accept">Si</string>
+    <string name="decline">No</string>
+
+</resources>

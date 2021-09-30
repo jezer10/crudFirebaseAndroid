@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "566830243905",
+    "project_id": "crudsqlite-51117",
+    "storage_bucket": "crudsqlite-51117.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:566830243905:android:32bb21718b46da17da26c0",
+        "android_client_info": {
+          "package_name": "com.example.crudsqlite"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "566830243905-ja0ii55ume0bfh7hforb8f9q1geu35k8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHu-gYLqv-YW9gLo6KGHOJQ4kjT9Rl6tQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "566830243905-ja0ii55ume0bfh7hforb8f9q1geu35k8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
